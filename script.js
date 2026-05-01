@@ -5,7 +5,7 @@
 
 /* ============== SITE CONFIG (Edit these) ============== */
 const SUPABASE_URL = "https://mpekparprverhxbbrcnf.supabase.co/rest/v1/";
-const SUPABASE_KEY = "https://mpekparprverhxbbrcnf.supabase.co/rest/v1/";
+const SUPABASE_KEY = "sb_publishable_4vY2LzqWr-hiwOKeI1t1Tw_I0l6MTLO";
 const SITE_CONFIG = {
   brandName: "Digital Premium",
   whatsappNumber: "+917908162155",        // Change to your WhatsApp number (with country code, no +)
