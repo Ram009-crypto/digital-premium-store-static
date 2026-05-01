@@ -490,20 +490,31 @@ PRODUCTS.find((p) => p.id === checkoutState.productId);
       checkoutState.payment.method = $("#pf-method").value;
 
       // Save order to localStorage so admin can view
-      const id = "DP-" + Date.now().toString().slice(-7);
-      const order = {
-        id,
-        createdAt: new Date().toISOString(),
-        product: { id: product.id, name: product.name, priceInr: product.priceInr },
-        bonus: bonus ? { id: bonus.id, name: bonus.name } : null,
-        customer: { ...checkoutState.customer },
-        payment: { ...checkoutState.payment },
-        status: "pending",
-      };
-      pushOrder(order);
-      checkoutState.orderId = id;
-      checkoutState.step = 4;
-      renderCheckoutStep();
+  fetch("https://script.google.com/macros/s/AKfycbzDis0lH8drkGl25016xV5uqPkiyK13MQPBwhZyjQvTZM1B7N3C5x1DxURQrw7pULJ75g/exec", {
+  method: "POST",
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
+  },
+  body: JSON.stringify({
+    name: checkoutState.customer.fullName,
+    email: checkoutState.customer.email,
+    phone: checkoutState.customer.phone,
+    product: product.name,
+    amount: product.priceInr,
+    utr: checkoutState.payment.utr
+  })
+})
+.then(res => res.text())
+.then(text => {
+  const data = JSON.parse(text);
+  checkoutState.orderId = data.orderId;
+  checkoutState.step = 4;
+  renderCheckoutStep();
+})
+.catch(err => {
+  showToast("Order failed. Try again.", "error");
+  console.log(err);
+});
     });
   }
 }
