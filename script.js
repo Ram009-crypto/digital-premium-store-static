@@ -490,32 +490,27 @@ PRODUCTS.find((p) => p.id === checkoutState.productId);
       checkoutState.payment.method = $("#pf-method").value;
 
       // Save order to localStorage so admin can view
-  fetch("https://script.google.com/macros/s/AKfycbzDis0lH8drkGl25016xV5uqPkiyK13MQPBwhZyjQvTZM1B7N3C5x1DxURQrw7pULJ75g/exec", {
+  fetch(`${SUPABASE_URL}/rest/v1/orders`, {
   method: "POST",
   headers: {
-    "Content-Type": "text/plain;charset=utf-8"
+    "Content-Type": "application/json",
+    "apikey": SUPABASE_KEY,
+    "Authorization": 'Bearer ${SUPABASE_KEY}',
+    "Prefer": "return=representation"
   },
   body: JSON.stringify({
-    name: checkoutState.customer.fullName,
+    customer_name: checkoutState.customer.fullName,
     email: checkoutState.customer.email,
     phone: checkoutState.customer.phone,
     product: product.name,
     amount: product.price || product.priceInr,
-    utr: checkoutState.payment.utr
+    utr: checkoutState.payment.utr,
+    status: "Pending"
   })
 })
-.then(res => res.text())
-.then(text => {
-  console.log(text);
-
-  let data;
-  try {
-    data = JSON.parse(text);
-  } catch(e) {
-    data = { success:true, orderId:"DP-" + Date.now() };
-  }
-
-  checkoutState.orderId = data.orderId;
+.then(res => res.json())
+.then(data => {
+  checkoutState.orderId = "DP-" + Date.now();
   checkoutState.step = 4;
   renderCheckoutStep();
 })
